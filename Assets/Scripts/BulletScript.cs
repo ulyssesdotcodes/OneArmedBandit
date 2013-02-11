@@ -18,6 +18,16 @@ public class BulletScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		
+		float dist;
+		playingPlane.Raycast(ray, out dist);
+		
+		Vector3 mousePositionOnPlayingPlane = ray.GetPoint(dist);
+		
+		this.gameObject.transform.LookAt(mousePositionOnPlayingPlane);
+		
 		if(Input.GetButton("Fire1")){
 			Debug.Log("Shooting");
 			//Create the bullet
@@ -28,17 +38,11 @@ public class BulletScript : MonoBehaviour {
 			bullet.collider.isTrigger = true;
 			bullet.rigidbody.useGravity = false;
 			
-			//Find the vector from the camera to the mouse click position in the x-y plane
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			
-			float dist;
-			playingPlane.Raycast(ray, out dist);
-			
 			Vector3 flattenedPosition = this.gameObject.transform.position;
 			flattenedPosition.y = 0;
 			
 			
-			Vector3 playerToMouseClick = ray.GetPoint(dist) - flattenedPosition;
+			Vector3 playerToMouseClick = mousePositionOnPlayingPlane - flattenedPosition;
 			playerToMouseClick.Normalize();
 			playerToMouseClick *= bulletSpeed;
 			
