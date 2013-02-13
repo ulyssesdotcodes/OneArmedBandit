@@ -162,6 +162,8 @@ ModelImporter:
     400154: TongueBack
     400156: TongueTip
     7400000: Idle2Crouch_Neutral2Crouch2Idle
+    7400002: GetUp
+    7400004: CrouchDown
     9500000: //RootNode
   materials:
     importMaterials: 1
@@ -180,6 +182,50 @@ ModelImporter:
       takeName: _142_TO_161_a_U1_M_P_idle2Crouch_Neutral2Crouch2Idle_Fb_p0_No_0_PJ_2
       firstFrame: 208
       lastFrame: 1818
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      keepAdditionalBonesAnimation: 1
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      skeletonMaskElements: []
+    - name: GetUp
+      takeName: _142_TO_161_a_U1_M_P_idle2Crouch_Neutral2Crouch2Idle_Fb_p0_No_0_PJ_2
+      firstFrame: 1650
+      lastFrame: 1818
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      keepAdditionalBonesAnimation: 1
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      skeletonMaskElements: []
+    - name: CrouchDown
+      takeName: _142_TO_161_a_U1_M_P_idle2Crouch_Neutral2Crouch2Idle_Fb_p0_No_0_PJ_2
+      firstFrame: 222
+      lastFrame: 362
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -468,7 +514,7 @@ ModelImporter:
         max: {x: 0, y: 25, z: 20}
         value: {x: .023295505, y: 0, z: .0116477525}
         preQ: {x: .345333457, y: .795804083, z: .267764211, w: -.41921711}
-        postQ: {x: .210876986, y: .682140589, z: .561994076, w: -.417585492}
+        postQ: {x: .210877001, y: .682140648, z: .561994076, w: -.417585522}
         length: .0291193891
         modified: 1
     - boneName: LeftHandThumb2
@@ -477,8 +523,8 @@ ModelImporter:
         min: {x: 0, y: 0, z: -40}
         max: {x: 0, y: 0, z: 35}
         value: {x: .0270181429, y: 0, z: .0135090714}
-        preQ: {x: .053110417, y: .717558324, z: .635130107, w: -.280889541}
-        postQ: {x: .128864452, y: .699289024, z: .622837365, w: -.32628572}
+        preQ: {x: .0531104095, y: .717558384, z: .635130107, w: -.280889541}
+        postQ: {x: .128864422, y: .699289083, z: .622837305, w: -.32628572}
         length: .0337726884
         modified: 1
     - boneName: LeftHandThumb3
@@ -487,8 +533,8 @@ ModelImporter:
         min: {x: 0, y: 0, z: -40}
         max: {x: 0, y: 0, z: 35}
         value: {x: .0202636048, y: 0, z: .0101318024}
-        preQ: {x: -.0125009455, y: .714357793, z: .670906067, w: -.198548526}
-        postQ: {x: .313691139, y: .668485701, z: .45087719, w: -.501432359}
+        preQ: {x: -.0125009548, y: .714357853, z: .670906067, w: -.19854854}
+        postQ: {x: .31369108, y: .668485701, z: .45087716, w: -.5014323}
         length: .0253295153
         modified: 1
     - boneName: LeftHandIndex1
@@ -919,7 +965,7 @@ ModelImporter:
       transformModified: 1
     - name: LeftHandThumb1
       position: {x: -.0142312413, y: -.0123778246, z: .0255316682}
-      rotation: {x: -.271399826, y: -.0564767122, z: -.0210089236, w: .960578382}
+      rotation: {x: -.271399856, y: -.0564767197, z: -.0210089255, w: .960578501}
       scale: {x: 1, y: 1, z: 1}
       transformModified: 1
     - name: LeftHandThumb2

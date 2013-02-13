@@ -68,7 +68,8 @@ public class DetonatorForce : DetonatorComponent {
 					//offsetting the explosion force position by the negative of the explosion's direction may help
 					hit.rigidbody.AddExplosionForce((power * size), _explosionPosition, (radius * size), (4f * MyDetonator().upwardsBias * size));
 					
-					SendMessage("OnDetonatorForceHit", null, SendMessageOptions.DontRequireReceiver);
+					hit.gameObject.SendMessage("OnDetonatorForceHit", null, SendMessageOptions.DontRequireReceiver);
+					
 					
 					//and light them on fire for Rune
 					if (fireObject)

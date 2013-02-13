@@ -175,13 +175,13 @@ ModelImporter:
     - name: Idle_SidesSteps_Idle
       takeName: _208_Idle_SidesSteps_Idle
       firstFrame: 96
-      lastFrame: 1969.99988
+      lastFrame: 373
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
-      loopBlend: 0
+      loopBlend: 1
       loopBlendOrientation: 0
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0

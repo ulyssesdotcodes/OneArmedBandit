@@ -15,8 +15,8 @@ public class GrenadeLogic : MonoBehaviour {
 	void Update () {
 		currentTime = Time.time;
 		if(currentTime - startTime >= 1){
-			Detonator detonator = this.gameObject.AddComponent<Detonator>();
-			detonator.autoCreateFireball = true;
+			Detonator detonator = this.gameObject.AddComponent<DetonatorFireball>();
+			detonator.autoCreateForce = false;
 			detonator.Explode();
 			detonator.destroyTime = 7;
 			Destroy(this.renderer);
