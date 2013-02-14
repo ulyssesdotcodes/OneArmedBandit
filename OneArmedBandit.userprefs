@@ -1,16 +1,20 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\AIActions.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\NormalBulletLogic.cs">
     <Files>
-      <File FileName="..\..\Downloads\MecanimTute\MecanimTute\Assets\Scripts\BotControlScript.cs" Line="74" Column="4" />
-      <File FileName="Assets\Scripts\ThirdPersonController.cs" Line="55" Column="9" />
+      <File FileName="Assets\Scripts\GrenadeLogic.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\ThirdPersonController.cs" Line="61" Column="52" />
       <File FileName="Assets\Scripts\IsometricCamera.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\GrenadeLogic.cs" Line="21" Column="24" />
-      <File FileName="Assets\Scripts\AIActions.cs" Line="9" Column="59" />
-      <File FileName="Assets\Scripts\SimpleAIFSMSystem.cs" Line="366" Column="90" />
-      <File FileName="Assets\Scripts\SimpleAIBehavior.cs" Line="43" Column="31" />
-      <File FileName="Assets\Scripts\Utilities.cs" Line="11" Column="56" />
+      <File FileName="Assets\Scripts\AIActions.cs" Line="1" Column="1" />
+      <File FileName="Assets\Detonator Explosion Framework\System\Detonator.cs" Line="1" Column="1" />
+      <File FileName="Assets\Detonator Explosion Framework\System\DetonatorFireball.cs" Line="1" Column="1" />
+      <File FileName="Assets\Detonator Explosion Framework\System\DetonatorGlow.cs" Line="1" Column="1" />
+      <File FileName="Assets\Detonator Explosion Framework\System\DetonatorForce.cs" Line="1" Column="1" />
+      <File FileName="Assets\Detonator Explosion Framework\System\DetonatorBurstEmitter.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\SimpleAIFSMSystem.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\SimpleAIBehavior.cs" Line="1" Column="1" />
       <File FileName="Assets\Standard Assets\Character Controllers\Sources\Scripts\ThirdPersonCamera.js" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\NormalBulletLogic.cs" Line="7" Column="30" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

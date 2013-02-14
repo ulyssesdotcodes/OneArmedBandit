@@ -5,7 +5,7 @@ using System.Collections;
 [AddComponentMenu("Detonator/Force")]
 public class DetonatorForce : DetonatorComponent {
 
-	private float _baseRadius = 50.0f;
+	private float _baseRadius = 7.0f;
 	private float _basePower = 4000.0f;
 	private float _scaledRange;
 	private float _scaledIntensity;
@@ -68,7 +68,8 @@ public class DetonatorForce : DetonatorComponent {
 					//offsetting the explosion force position by the negative of the explosion's direction may help
 					hit.rigidbody.AddExplosionForce((power * size), _explosionPosition, (radius * size), (4f * MyDetonator().upwardsBias * size));
 					
-					hit.gameObject.SendMessage("OnDetonatorForceHit", null, SendMessageOptions.DontRequireReceiver);
+					
+					SendMessage("OnDetonatorForceHit", null, SendMessageOptions.DontRequireReceiver);
 					
 					
 					//and light them on fire for Rune

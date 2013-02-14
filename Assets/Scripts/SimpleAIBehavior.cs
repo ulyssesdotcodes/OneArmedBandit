@@ -27,8 +27,6 @@ public class SimpleAIBehavior : MonoBehaviour {
 		fsm.CurrentState.Reason();
 		fsm.CurrentState.Act();
 		
-		if(health <= 0)
-			Destroy(gameObject);
 		
 		anim.SetBool("Exploded", false);
 	}
@@ -47,11 +45,15 @@ public class SimpleAIBehavior : MonoBehaviour {
 		fsm.AddState(chasePlayer);
 	}
 	
-	public void OnDetonatorForceHit(){
-		Debug.Log("Hit!");
+	public void LoseLife(int life){
+		Debug.Log("Losing " + life + " life.");			
 		
-		health -= 1;
+		health -= life;
 		
-		anim.SetBool("Exploded", true);
+		
+		if(health <= 0){
+			Debug.Log("Dying now. Peace.");
+			Destroy(gameObject);
+		}
 	}
 }

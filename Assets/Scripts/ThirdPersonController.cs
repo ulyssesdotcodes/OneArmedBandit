@@ -8,20 +8,24 @@ public class ThirdPersonController : MonoBehaviour {
 	
 	public float animSpeed = 1;
 	public float moveSpeed = 5f;
-	public GameObject bulletPrefab;
-	public Material bulletMat;
-	public float grenadeSpeed = 10.0f;
+	public GameObject grenadePrefab;
+	public GameObject normalBulletPrefab;
 	
 	private Animator anim;
 	private AnimatorStateInfo currentState;
 	private Plane playingPlane;
 	private bool fired = false;
 	private Vector3 mousePositionOnPlayingPlane;
+	private GameObject selectedBullet;
+	private string selectedBulletScript;
 	
 	// Use this for initialization
 	void Start () {
 		playingPlane = new Plane(Vector3.up, Vector3.zero);
 		anim = this.GetComponent<Animator>();
+		
+		selectedBullet = normalBulletPrefab;
+		selectedBulletScript = "NormalBulletLogic";
 	}
 	
 	// Update is called once per frame
@@ -54,33 +58,40 @@ public class ThirdPersonController : MonoBehaviour {
 		if(!fired && Input.GetButton("Fire1")){
 			Debug.Log("Shooting");
 			
-			ShootGrenade();
+			ShootBullet(selectedBullet, selectedBulletScript);
 			
 			fired = true;
 		} else if(fired && Input.GetButtonUp("Fire1")){
 			fired = false;
 		}
+		
+		//BulletSlector
+		if(Input.GetButton("SelectBullet1")){
+			if(selectedBullet != normalBulletPrefab){
+				selectedBullet = normalBulletPrefab;
+				selectedBulletScript = "NormalBulletLogic";
+			}
+		} else if(Input.GetButton("SelectBullet2")){
+			if(selectedBullet != grenadePrefab){
+				selectedBullet = grenadePrefab;
+				selectedBulletScript = "GrenadeLogic";
+			}
+		}
 	}
 	
-	void ShootGrenade(){
-		//Create the grenade
-		GameObject bullet = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-		bullet.renderer.material = bulletMat;
-		bullet.AddComponent<Rigidbody>();
-		bullet.AddComponent<GrenadeLogic>();
-		bullet.transform.position = this.gameObject.transform.position + Vector3.up * 1f + this.transform.forward * 0.5f;
-		bullet.transform.rigidbody.useGravity = true;
-		
+	void ShootBullet(GameObject bulletPrefab, string bulletType){
+		GameObject bullet = (GameObject) Instantiate(bulletPrefab, 
+			this.gameObject.transform.position + Vector3.up * 1f + this.transform.forward * 0.5f,
+			Quaternion.identity);
+		bullet.AddComponent(bulletType);
 		
 		Vector3 flattenedPosition = this.gameObject.transform.position;
 		flattenedPosition.y = 0;
 		
 		Vector3 playerToMouseClick = mousePositionOnPlayingPlane - flattenedPosition;
 		playerToMouseClick.Normalize();
-		playerToMouseClick *= grenadeSpeed;
-		playerToMouseClick.y += 0.5f;
-	
-		bullet.rigidbody.velocity = playerToMouseClick;
 		
+		bullet.SendMessage("PlayerMouseVectorLogic", playerToMouseClick, 
+			SendMessageOptions.DontRequireReceiver);
 	}
 }

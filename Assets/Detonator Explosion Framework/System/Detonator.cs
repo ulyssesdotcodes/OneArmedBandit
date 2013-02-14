@@ -247,6 +247,20 @@ public class Detonator : MonoBehaviour {
 		{
 			_force = gameObject.AddComponent("DetonatorForce") as DetonatorForce;
 			_force.Reset();
+			
+			//Apply the force here because it's easier than figuring out how many explosions happen
+			Vector3 _explosionPosition = transform.position; //- Vector3.Normalize(MyDetonator().direction);
+			Collider[] _colliders = Physics.OverlapSphere (_explosionPosition, size/2);
+			
+			foreach (Collider hit in _colliders) 
+			{
+				if (!hit)
+				{
+					continue;
+				}
+				
+				hit.gameObject.SendMessage("LoseLife", 1, SendMessageOptions.DontRequireReceiver);
+			}
 		}
 
         if (!_heatwave && autoCreateHeatwave && SystemInfo.supportsImageEffects)
@@ -334,6 +348,8 @@ public class Detonator : MonoBehaviour {
 			UpdateComponents();
 			component.Explode();
 		}
+		
+		
 	}
 	
 	public void Reset() 
