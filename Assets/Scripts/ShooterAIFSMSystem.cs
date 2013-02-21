@@ -49,42 +49,46 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 /// Place the labels for the Transitions in this enum.
 /// Don't change the first label, NullTransition as FSMSystem class uses it.
 /// </summary>
-public enum SimpleAITransition
+public enum ShooterAITransition
 {
     NullTransition = 0, // Use this transition to represent a non-existing transition in your system
 	FoundPlayer = 1,
-	LostPlayer = 2
+	LostPlayer = 2,
+	PlayerTooClose = 3
 }
  
 /// <summary>
 /// Place the labels for the States in this enum.
 /// Don't change the first label, NullTransition as FSMSystem class uses it.
 /// </summary>
-public enum SimpleAIStateID
+public enum ShooterAIStateID
 {
     NullStateID = 0, // Use this ID to represent a non-existing State in your system	
 	Idle = 1,
-	ChasePlayer = 2
+	ShootPlayer = 2,
+	FleePlayer = 3
 } 
 
-public abstract class SimpleAIFSMState
+public abstract class ShooterAIFSMState
 {
-	protected static float visibleRadius = 10f;
+	protected static float visibleRadius = 8f;
+	protected static float attackRadius = 8f;
+	protected static float fleeRadius = 3.5f;
 	
-    protected Dictionary<SimpleAITransition, SimpleAIStateID> map = new Dictionary<SimpleAITransition, SimpleAIStateID>();
-    protected SimpleAIStateID stateID;
-    public SimpleAIStateID ID { get { return stateID; } }
+    protected Dictionary<ShooterAITransition, ShooterAIStateID> map = new Dictionary<ShooterAITransition, ShooterAIStateID>();
+    protected ShooterAIStateID stateID;
+    public ShooterAIStateID ID { get { return stateID; } }
  
-    public void AddTransition(SimpleAITransition trans, SimpleAIStateID id)
+    public void AddTransition(ShooterAITransition trans, ShooterAIStateID id)
     {
         // Check if anyone of the args is invalid
-        if (trans == SimpleAITransition.NullTransition)
+        if (trans == ShooterAITransition.NullTransition)
         {
             Debug.LogError("FSMState ERROR: NullTransition is not allowed for a real transition");
             return;
         }
  
-        if (id == SimpleAIStateID.NullStateID)
+        if (id == ShooterAIStateID.NullStateID)
         {
             Debug.LogError("FSMState ERROR: NullStateID is not allowed for a real ID");
             return;
@@ -106,10 +110,10 @@ public abstract class SimpleAIFSMState
     /// This method deletes a pair transition-state from this state's map.
     /// If the transition was not inside the state's map, an ERROR message is printed.
     /// </summary>
-    public void DeleteTransition(SimpleAITransition trans)
+    public void DeleteTransition(ShooterAITransition trans)
     {
         // Check for NullTransition
-        if (trans == SimpleAITransition.NullTransition)
+        if (trans == ShooterAITransition.NullTransition)
         {
             Debug.LogError("FSMState ERROR: NullTransition is not allowed");
             return;
@@ -129,14 +133,14 @@ public abstract class SimpleAIFSMState
     /// This method returns the new state the FSM should be if
     ///    this state receives a transition and 
     /// </summary>
-    public SimpleAIStateID GetOutputState(SimpleAITransition trans)
+    public ShooterAIStateID GetOutputState(ShooterAITransition trans)
     {
         // Check if the map has this transition
         if (map.ContainsKey(trans))
         {
             return map[trans];
         }
-        return SimpleAIStateID.NullStateID;
+        return ShooterAIStateID.NullStateID;
     }
  
     /// <summary>
@@ -175,20 +179,20 @@ public abstract class SimpleAIFSMState
 ///  It has a List with the States the NPC has and methods to add,
 ///  delete a state, and to change the current state the Machine is on.
 /// </summary>
-public class SimpleAIFSMSystem
+public class ShooterAIFSMSystem
 {
-    private List<SimpleAIFSMState> states;
+    private List<ShooterAIFSMState> states;
  
     // The only way one can change the state of the FSM is by performing a transition
     // Don't change the CurrentState directly
-    private SimpleAIStateID currentStateID;
-    public SimpleAIStateID CurrentStateID { get { return currentStateID; } }
-    private SimpleAIFSMState currentState;
-    public SimpleAIFSMState CurrentState { get { return currentState; } }
+    private ShooterAIStateID currentStateID;
+    public ShooterAIStateID CurrentStateID { get { return currentStateID; } }
+    private ShooterAIFSMState currentState;
+    public ShooterAIFSMState CurrentState { get { return currentState; } }
  
-    public SimpleAIFSMSystem()
+    public ShooterAIFSMSystem()
     {
-        states = new List<SimpleAIFSMState>();
+        states = new List<ShooterAIFSMState>();
     }
  
     /// <summary>
@@ -196,7 +200,7 @@ public class SimpleAIFSMSystem
     /// or prints an ERROR message if the state was already inside the List.
     /// First state added is also the initial state.
     /// </summary>
-    public void AddState(SimpleAIFSMState s)
+    public void AddState(ShooterAIFSMState s)
     {
         // Check for Null reference before deleting
         if (s == null)
@@ -215,7 +219,7 @@ public class SimpleAIFSMSystem
         }
  
         // Add the state to the List if it's not inside it
-        foreach (SimpleAIFSMState state in states)
+        foreach (ShooterAIFSMState state in states)
         {
             if (state.ID == s.ID)
             {
@@ -231,17 +235,17 @@ public class SimpleAIFSMSystem
     /// This method delete a state from the FSM List if it exists, 
     ///   or prints an ERROR message if the state was not on the List.
     /// </summary>
-    public void DeleteState(SimpleAIStateID id)
+    public void DeleteState(ShooterAIStateID id)
     {
         // Check for NullState before deleting
-        if (id == SimpleAIStateID.NullStateID)
+        if (id == ShooterAIStateID.NullStateID)
         {
             Debug.LogError("FSM ERROR: NullStateID is not allowed for a real state");
             return;
         }
  
         // Search the List and delete the state if it's inside it
-        foreach (SimpleAIFSMState state in states)
+        foreach (ShooterAIFSMState state in states)
         {
             if (state.ID == id)
             {
@@ -259,18 +263,18 @@ public class SimpleAIFSMSystem
     ///  doesn't have a target state for the transition passed, 
     /// an ERROR message is printed.
     /// </summary>
-    public void PerformTransition(SimpleAITransition trans)
+    public void PerformTransition(ShooterAITransition trans)
     {
         // Check for NullTransition before changing the current state
-        if (trans == SimpleAITransition.NullTransition)
+        if (trans == ShooterAITransition.NullTransition)
         {
             Debug.LogError("FSM ERROR: NullTransition is not allowed for a real transition");
             return;
         }
  
         // Check if the currentState has the transition passed as argument
-        SimpleAIStateID id = currentState.GetOutputState(trans);
-        if (id == SimpleAIStateID.NullStateID)
+        ShooterAIStateID id = currentState.GetOutputState(trans);
+        if (id == ShooterAIStateID.NullStateID)
         {
             Debug.LogError("FSM ERROR: State " + currentStateID.ToString() +  " does not have a target state " + 
                            " for transition " + trans.ToString());
@@ -279,7 +283,7 @@ public class SimpleAIFSMSystem
  
         // Update the currentStateID and currentState		
         currentStateID = id;
-        foreach (SimpleAIFSMState state in states)
+        foreach (ShooterAIFSMState state in states)
         {
             if (state.ID == currentStateID)
             {
@@ -298,16 +302,17 @@ public class SimpleAIFSMSystem
  
 } //class FSMSystem
 
-public class Idle : SimpleAIFSMState
+public class ShooterIdle : ShooterAIFSMState
 {
 	int moveSpeed;
 	GameObject npc, pc;
 	Animator anim;
-	SimpleAIFSMSystem fsm;
+	ShooterAIFSMSystem fsm;
+	GameObject aiming;
 	
-	public Idle(SimpleAIFSMSystem fsm, GameObject npc, GameObject pc)
+	public ShooterIdle(ShooterAIFSMSystem fsm, GameObject npc, GameObject pc)
 	{
-		stateID = SimpleAIStateID.Idle;
+		stateID = ShooterAIStateID.Idle;
 		this.npc = npc;
 		this.pc = pc;
 		this.fsm = fsm;
@@ -319,52 +324,19 @@ public class Idle : SimpleAIFSMState
 	{
 		if(anim != null)
 			anim.SetFloat("Speed", 0f);
+		aiming = GameObject.CreatePrimitive(PrimitiveType.Cube);
 	}
 	
 	public override void Reason ()
 	{
 		if(AIActions.CanSee(npc, pc, visibleRadius))
 		{
-			fsm.PerformTransition(SimpleAITransition.FoundPlayer);
+			fsm.PerformTransition(ShooterAITransition.FoundPlayer);
 		}
 	}
 	
 	public override void Act ()
 	{
 		AIActions.Wait();
-	}
-}
-
-public class ChasePlayer : SimpleAIFSMState
-{
-	GameObject npc, pc;
-	long startTime;
-	Animator anim;
-	SimpleAIFSMSystem fsm;
-	
-	public ChasePlayer(SimpleAIFSMSystem fsm, GameObject npc, GameObject pc)
-	{
-		stateID = SimpleAIStateID.ChasePlayer;
-		this.npc = npc;
-		this.pc = pc;
-		anim = npc.GetComponent<Animator>();
-		this.fsm = fsm;
-	}
-	
-	public override void DoBeforeEntering ()
-	{
-		if(anim != null)
-			anim.SetFloat("Speed", 1f);
-	}
-	
-	public override void Reason ()
-	{
-		if(!AIActions.CanSee(npc, pc, visibleRadius))
-			fsm.PerformTransition(SimpleAITransition.LostPlayer);
-	}
-	
-	public override void Act ()
-	{
-		npc.transform.LookAt(Utilities.MatchY(pc.transform.position, npc.transform.position));	
 	}
 }

@@ -49,42 +49,51 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 /// Place the labels for the Transitions in this enum.
 /// Don't change the first label, NullTransition as FSMSystem class uses it.
 /// </summary>
-public enum SimpleAITransition
+public enum WolfAITransition
 {
     NullTransition = 0, // Use this transition to represent a non-existing transition in your system
 	FoundPlayer = 1,
-	LostPlayer = 2
+	LostPlayer = 2,
+	ReachedPlayer = 3,
+	PlayerRan = 4,
+	Dying = 5,
+	PlayerDead = 6
 }
  
 /// <summary>
 /// Place the labels for the States in this enum.
 /// Don't change the first label, NullTransition as FSMSystem class uses it.
 /// </summary>
-public enum SimpleAIStateID
+public enum WolfAIStateID
 {
     NullStateID = 0, // Use this ID to represent a non-existing State in your system	
 	Idle = 1,
-	ChasePlayer = 2
+	ChasePlayer = 2,
+	AttackPlayer = 3,
+	Dead = 4
 } 
 
-public abstract class SimpleAIFSMState
+public abstract class WolfAIFSMState
 {
-	protected static float visibleRadius = 10f;
+	protected static float moveSpeed = 5f;
+	protected static float damping = 10f;
+	protected static float attackRadius = 2f;
+	protected static float visibleRadius = 12f;
 	
-    protected Dictionary<SimpleAITransition, SimpleAIStateID> map = new Dictionary<SimpleAITransition, SimpleAIStateID>();
-    protected SimpleAIStateID stateID;
-    public SimpleAIStateID ID { get { return stateID; } }
+    protected Dictionary<WolfAITransition, WolfAIStateID> map = new Dictionary<WolfAITransition, WolfAIStateID>();
+    protected WolfAIStateID stateID;
+    public WolfAIStateID ID { get { return stateID; } }
  
-    public void AddTransition(SimpleAITransition trans, SimpleAIStateID id)
+    public void AddTransition(WolfAITransition trans, WolfAIStateID id)
     {
         // Check if anyone of the args is invalid
-        if (trans == SimpleAITransition.NullTransition)
+        if (trans == WolfAITransition.NullTransition)
         {
             Debug.LogError("FSMState ERROR: NullTransition is not allowed for a real transition");
             return;
         }
  
-        if (id == SimpleAIStateID.NullStateID)
+        if (id == WolfAIStateID.NullStateID)
         {
             Debug.LogError("FSMState ERROR: NullStateID is not allowed for a real ID");
             return;
@@ -106,10 +115,10 @@ public abstract class SimpleAIFSMState
     /// This method deletes a pair transition-state from this state's map.
     /// If the transition was not inside the state's map, an ERROR message is printed.
     /// </summary>
-    public void DeleteTransition(SimpleAITransition trans)
+    public void DeleteTransition(WolfAITransition trans)
     {
         // Check for NullTransition
-        if (trans == SimpleAITransition.NullTransition)
+        if (trans == WolfAITransition.NullTransition)
         {
             Debug.LogError("FSMState ERROR: NullTransition is not allowed");
             return;
@@ -129,14 +138,14 @@ public abstract class SimpleAIFSMState
     /// This method returns the new state the FSM should be if
     ///    this state receives a transition and 
     /// </summary>
-    public SimpleAIStateID GetOutputState(SimpleAITransition trans)
+    public WolfAIStateID GetOutputState(WolfAITransition trans)
     {
         // Check if the map has this transition
         if (map.ContainsKey(trans))
         {
             return map[trans];
         }
-        return SimpleAIStateID.NullStateID;
+        return WolfAIStateID.NullStateID;
     }
  
     /// <summary>
@@ -175,20 +184,20 @@ public abstract class SimpleAIFSMState
 ///  It has a List with the States the NPC has and methods to add,
 ///  delete a state, and to change the current state the Machine is on.
 /// </summary>
-public class SimpleAIFSMSystem
+public class WolfAIFSMSystem
 {
-    private List<SimpleAIFSMState> states;
+    private List<WolfAIFSMState> states;
  
     // The only way one can change the state of the FSM is by performing a transition
     // Don't change the CurrentState directly
-    private SimpleAIStateID currentStateID;
-    public SimpleAIStateID CurrentStateID { get { return currentStateID; } }
-    private SimpleAIFSMState currentState;
-    public SimpleAIFSMState CurrentState { get { return currentState; } }
+    private WolfAIStateID currentStateID;
+    public WolfAIStateID CurrentStateID { get { return currentStateID; } }
+    private WolfAIFSMState currentState;
+    public WolfAIFSMState CurrentState { get { return currentState; } }
  
-    public SimpleAIFSMSystem()
+    public WolfAIFSMSystem()
     {
-        states = new List<SimpleAIFSMState>();
+        states = new List<WolfAIFSMState>();
     }
  
     /// <summary>
@@ -196,7 +205,7 @@ public class SimpleAIFSMSystem
     /// or prints an ERROR message if the state was already inside the List.
     /// First state added is also the initial state.
     /// </summary>
-    public void AddState(SimpleAIFSMState s)
+    public void AddState(WolfAIFSMState s)
     {
         // Check for Null reference before deleting
         if (s == null)
@@ -215,7 +224,7 @@ public class SimpleAIFSMSystem
         }
  
         // Add the state to the List if it's not inside it
-        foreach (SimpleAIFSMState state in states)
+        foreach (WolfAIFSMState state in states)
         {
             if (state.ID == s.ID)
             {
@@ -231,17 +240,17 @@ public class SimpleAIFSMSystem
     /// This method delete a state from the FSM List if it exists, 
     ///   or prints an ERROR message if the state was not on the List.
     /// </summary>
-    public void DeleteState(SimpleAIStateID id)
+    public void DeleteState(WolfAIStateID id)
     {
         // Check for NullState before deleting
-        if (id == SimpleAIStateID.NullStateID)
+        if (id == WolfAIStateID.NullStateID)
         {
             Debug.LogError("FSM ERROR: NullStateID is not allowed for a real state");
             return;
         }
  
         // Search the List and delete the state if it's inside it
-        foreach (SimpleAIFSMState state in states)
+        foreach (WolfAIFSMState state in states)
         {
             if (state.ID == id)
             {
@@ -259,18 +268,18 @@ public class SimpleAIFSMSystem
     ///  doesn't have a target state for the transition passed, 
     /// an ERROR message is printed.
     /// </summary>
-    public void PerformTransition(SimpleAITransition trans)
+    public void PerformTransition(WolfAITransition trans)
     {
         // Check for NullTransition before changing the current state
-        if (trans == SimpleAITransition.NullTransition)
+        if (trans == WolfAITransition.NullTransition)
         {
             Debug.LogError("FSM ERROR: NullTransition is not allowed for a real transition");
             return;
         }
  
         // Check if the currentState has the transition passed as argument
-        SimpleAIStateID id = currentState.GetOutputState(trans);
-        if (id == SimpleAIStateID.NullStateID)
+        WolfAIStateID id = currentState.GetOutputState(trans);
+        if (id == WolfAIStateID.NullStateID)
         {
             Debug.LogError("FSM ERROR: State " + currentStateID.ToString() +  " does not have a target state " + 
                            " for transition " + trans.ToString());
@@ -279,7 +288,7 @@ public class SimpleAIFSMSystem
  
         // Update the currentStateID and currentState		
         currentStateID = id;
-        foreach (SimpleAIFSMState state in states)
+        foreach (WolfAIFSMState state in states)
         {
             if (state.ID == currentStateID)
             {
@@ -298,16 +307,15 @@ public class SimpleAIFSMSystem
  
 } //class FSMSystem
 
-public class Idle : SimpleAIFSMState
+public class WolfIdle : WolfAIFSMState
 {
-	int moveSpeed;
 	GameObject npc, pc;
 	Animator anim;
-	SimpleAIFSMSystem fsm;
+	WolfAIFSMSystem fsm;
 	
-	public Idle(SimpleAIFSMSystem fsm, GameObject npc, GameObject pc)
+	public WolfIdle(WolfAIFSMSystem fsm, GameObject npc, GameObject pc)
 	{
-		stateID = SimpleAIStateID.Idle;
+		stateID = WolfAIStateID.Idle;
 		this.npc = npc;
 		this.pc = pc;
 		this.fsm = fsm;
@@ -317,15 +325,14 @@ public class Idle : SimpleAIFSMState
 	
 	public override void DoBeforeEntering ()
 	{
-		if(anim != null)
-			anim.SetFloat("Speed", 0f);
+		
 	}
 	
 	public override void Reason ()
 	{
-		if(AIActions.CanSee(npc, pc, visibleRadius))
+		if(!pc.GetComponent<ThirdPersonController>().dead && AIActions.CanSeeAllDirections(npc, pc, visibleRadius))
 		{
-			fsm.PerformTransition(SimpleAITransition.FoundPlayer);
+			fsm.PerformTransition(WolfAITransition.FoundPlayer);
 		}
 	}
 	
@@ -335,16 +342,68 @@ public class Idle : SimpleAIFSMState
 	}
 }
 
-public class ChasePlayer : SimpleAIFSMState
+public class WolfChasePlayer : WolfAIFSMState
 {
 	GameObject npc, pc;
 	long startTime;
 	Animator anim;
-	SimpleAIFSMSystem fsm;
+	WolfAIFSMSystem fsm;
+	ThirdPersonController pcScript;
+	GameObject aiming;
 	
-	public ChasePlayer(SimpleAIFSMSystem fsm, GameObject npc, GameObject pc)
+	public WolfChasePlayer(WolfAIFSMSystem fsm, GameObject npc, GameObject pc)
 	{
-		stateID = SimpleAIStateID.ChasePlayer;
+		stateID = WolfAIStateID.ChasePlayer;
+		this.npc = npc;
+		this.pc = pc;
+		pcScript = pc.GetComponent<ThirdPersonController>();
+		anim = npc.GetComponent<Animator>();
+		this.fsm = fsm;
+	}
+	
+	public override void DoBeforeEntering ()
+	{
+		//aiming = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		//aiming.collider.isTrigger = true;
+	}
+	
+	public override void DoBeforeLeaving(){
+		//GameObject.Destroy(aiming);
+	}
+	
+	public override void Reason ()
+	{
+		if(!AIActions.CanSeeAllDirections(npc, pc, visibleRadius))
+			fsm.PerformTransition(WolfAITransition.LostPlayer);
+		if(AIActions.CanAttack(npc, pc, attackRadius))
+			fsm.PerformTransition(WolfAITransition.ReachedPlayer);
+	}
+	
+	public override void Act ()
+	{
+		Vector3 toPlayer = npc.transform.position - pc.transform.position;
+		float lookAheadTime = toPlayer.magnitude/(moveSpeed + pcScript.movingDirection.magnitude);
+		//Vector3 aimingAt = (this.pc.transform.position + pcScript.movingDirection * lookAheadTime);
+		//aiming.transform.position = aimingAt;
+		Quaternion rotation = Quaternion.LookRotation((this.pc.transform.position + pcScript.movingDirection * lookAheadTime) - npc.transform.position);
+		npc.transform.rotation = Quaternion.Slerp(npc.transform.rotation, rotation, Time.deltaTime * damping);
+		AIActions.MoveForward(npc, moveSpeed);
+	}
+}
+
+public class WolfAttackPlayer : WolfAIFSMState
+{
+	GameObject npc, pc;
+	Animator anim;
+	WolfAIFSMSystem fsm;
+	float attackDamage = 1f;
+	bool attackForward = true;
+	float attackTime;
+	Vector3 attackFrom;
+	
+	public WolfAttackPlayer(WolfAIFSMSystem fsm, GameObject npc, GameObject pc)
+	{
+		stateID = WolfAIStateID.AttackPlayer;
 		this.npc = npc;
 		this.pc = pc;
 		anim = npc.GetComponent<Animator>();
@@ -353,18 +412,39 @@ public class ChasePlayer : SimpleAIFSMState
 	
 	public override void DoBeforeEntering ()
 	{
-		if(anim != null)
-			anim.SetFloat("Speed", 1f);
+		this.attackFrom = npc.transform.position;
+		attackTime = Time.time;
 	}
 	
 	public override void Reason ()
 	{
-		if(!AIActions.CanSee(npc, pc, visibleRadius))
-			fsm.PerformTransition(SimpleAITransition.LostPlayer);
+		if(!AIActions.CanAttack(npc, pc, attackRadius*1.05f))
+			fsm.PerformTransition(WolfAITransition.PlayerRan);
 	}
 	
 	public override void Act ()
 	{
-		npc.transform.LookAt(Utilities.MatchY(pc.transform.position, npc.transform.position));	
+		Quaternion rotation = Quaternion.LookRotation(pc.transform.position - npc.transform.position);
+		npc.transform.rotation = Quaternion.Slerp(npc.transform.rotation, rotation, Time.deltaTime * damping);
+		
+		if(Time.time - attackTime > 0.5f){
+			attackTime = Time.time;
+			if(attackForward){
+				pc.SendMessage("LoseLife", 1);
+			}
+			attackForward = !attackForward;
+		}
+		
+		
+		if(pc.GetComponent<ThirdPersonController>().dead){
+			fsm.PerformTransition(WolfAITransition.PlayerDead);
+		}
+		
+		Vector3 attackTo = attackFrom + (pc.transform.position - attackFrom) * 0.5f;
+		
+		if(attackForward)
+			this.npc.transform.position = Vector3.Lerp(this.npc.transform.position, attackTo, Time.fixedDeltaTime * 2f);
+		else
+			this.npc.transform.position = Vector3.Lerp(this.npc.transform.position, attackFrom, Time.fixedDeltaTime * 2f);
 	}
 }
