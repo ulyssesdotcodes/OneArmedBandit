@@ -75,10 +75,10 @@ public enum WolfAIStateID
 
 public abstract class WolfAIFSMState
 {
-	protected static float moveSpeed = 5f;
-	protected static float damping = 10f;
-	protected static float attackRadius = 2f;
-	protected static float visibleRadius = 12f;
+	public static float moveSpeed;
+	public static float damping = 10f;
+	public static float attackRadius;
+	public static float visibleRadius;
 	
     protected Dictionary<WolfAITransition, WolfAIStateID> map = new Dictionary<WolfAITransition, WolfAIStateID>();
     protected WolfAIStateID stateID;

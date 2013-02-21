@@ -9,7 +9,8 @@ public class NormalBulletLogic : MonoBehaviour {
 	private float startTime, currentTime;
 	private Vector3 playerToMouse;
 	private Vector3 startPosition;
-	public float maxDistance = 20f;
+	public float maxDistance = 2f;
+	public float lineWidth = 0.5f;
 	private LineRenderer line;
 	
 	
@@ -40,6 +41,7 @@ public class NormalBulletLogic : MonoBehaviour {
 		}
 		line.SetPosition(0, this.transform.position);
 		line.SetPosition(1, ray.GetPoint(maxDistance));
-		line.SetWidth(0.1f, 0.1f);
+		line.SetWidth(lineWidth, lineWidth);
+		line.material.mainTexture.wrapMode = TextureWrapMode.Repeat;
 	}
 }

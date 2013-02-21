@@ -5,9 +5,15 @@ using System.Collections;
 [RequireComponent (typeof(Rigidbody))]
 [RequireComponent (typeof(Collider))]
 public class WolfAIBehavior : MonoBehaviour {
-
-	private WolfAIFSMSystem fsm;
+	
 	public GameObject pc;
+	public float moveSpeed = 6f;
+	public float visibleRadius = 12f;
+	public float attackRadius = 2f;
+	
+	private WolfAIFSMSystem fsm;
+	private float hitTime;
+	private float hitLength = 0.5f;
 	Animator anim;
 	
 	private long startExplosionTime;
@@ -27,10 +33,17 @@ public class WolfAIBehavior : MonoBehaviour {
 		fsm.CurrentState.Reason();
 		fsm.CurrentState.Act();
 		AIActions.MoveBackInBounds(gameObject);
+		
+		if(hitTime >= 0 && Time.time - hitTime >= hitLength){
+			this.renderer.material.SetColor("_Color", Color.white);
+		}
 	}
 	
 	private void MakeFSM()
 	{
+		WolfAIFSMState.moveSpeed = this.moveSpeed;
+		WolfAIFSMState.visibleRadius = this.visibleRadius;
+		WolfAIFSMState.attackRadius = this.attackRadius;
 		fsm = new WolfAIFSMSystem();
 		
 		if(pc == null)
@@ -59,7 +72,8 @@ public class WolfAIBehavior : MonoBehaviour {
 		Debug.Log("Wolf lost " + life + " life.");			
 		
 		health -= life;
-		
+		this.renderer.material.SetColor("_Color", Color.red);
+		hitTime = Time.time;
 		
 		if(health <= 0){
 			Debug.Log("Dying now. Peace.");
