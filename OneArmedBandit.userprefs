@@ -2,6 +2,7 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\ThirdPersonController.cs">
     <Files>
+<<<<<<< Updated upstream
       <File FileName="Assets\Scripts\ShooterAIFSMSystem.cs" Line="342" Column="2" />
       <File FileName="Assets\Scripts\WolfAIFSMSystem.cs" Line="371" Column="5" />
       <File FileName="Assets\Scripts\ThirdPersonController.cs" Line="119" Column="3" />
@@ -14,6 +15,15 @@
       <File FileName="Assets\Scripts\SimpleAIFSMSystem.cs" Line="1" Column="1" />
       <File FileName="Assets\NGUI\ReadMe.txt" Line="1" Column="1" />
       <File FileName="Assets\NGUI\Examples\Other\English.txt" Line="1" Column="1" />
+=======
+      <File FileName="Assets\Scripts\ThirdPersonController.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\IsometricCamera.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\GrenadeLogic.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\BotActions.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\SimpleAIFSMSystem.cs" Line="1" Column="1" />
+      <File FileName="Assets\Standard Assets\Character Controllers\Sources\Scripts\ThirdPersonCamera.js" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\FSMState.cs" Line="13" Column="1" />
+>>>>>>> Stashed changes
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
